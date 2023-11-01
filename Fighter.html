@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>One-on-One Fighter Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>One-on-One Fighter Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="initialize();">
+    <h1>One-on-One Fighter Game</h1>
+    <div class="battlefield">
+        <img src="EMIYA.png" id="emiya">
+        <img src="Gilgamesh.png" id="gilgamesh">
+    </div>
+
+    <div class="action-buttons">
+        <button id="attack-button">Attack</button>
+        <button id="defend-button">Defend</button>
+        <button id="finish-button"disabled = true>Finishing Move</button>
+    </div>
+
+    <div class="player">
+        <h2>EMIYA</h2>
+        <div class="player-status" id="emiya-stats">Strength: 6, Cunning: 6, Speed: 6, Fatigue: 30</div>
+    </div>
+
+    <div class="computer">
+        <h2>Gilgamesh</h2>
+        <div class="computer-status" id="gilgamesh-stats">Strength: 6, Cunning: 6, Speed: 6, Fatigue: 30</div>
+    </div>
+
+    <div class="battle-log">
+        <h2>Battle Log</h2>
+        <ul id="log-list" style="list-style: none; padding: 0; margin: 0;"></ul>
+    </div>
+</body>
+
+<script>
+    let gameOver = false;
+    const player = {
+        name: "EMIYA",
+        strength: 6,
+        cunning: 6,
+        speed: 6,
+        fatigue: 30,
+        defending: false,
+        originalFatigue: 30,
+        x: 280,
+        y: 325,
+    };
+
+    const computer = {
+        name: "Gilgamesh",
+        strength: 6,
+        cunning: 6,
+        speed: 6,
+        fatigue: 30,
+        defending: false,
+        originalFatigue: 30,
+        x: 800,
+        y: 360,
+    };
+
+    function random(fighter) {
+        const arr = ["strength", "cunning", "speed", "fatigue"];
+        const arrlength = arr.length;
+
+        for (let i = 0; i < arrlength; i++) {
+            const randomValue = arr[Math.floor(Math.random() * arrlength)];
+
+            if (i < 2) {
+                if (fighter[randomValue] === fighter.fatigue) {
+                    fighter[randomValue] += Math.floor(Math.random() * 6);
+                    fighter.originalFatigue = fighter.fatigue;
+                } else {
+                    fighter[randomValue] += Math.floor(Math.random() * 2);
+                }
+            } else {
+                if (fighter[randomValue] === fighter.fatigue) {
+                    fighter[randomValue] -= Math.floor(Math.random() * 6);
+                    fighter.originalFatigue = fighter.fatigue;
+                } else {
+                    fighter[randomValue] -= Math.floor(Math.random() * 2);
+                }
+            }
+            arr.pop(randomValue);
+        }
+    }
+
+    initialize = () => {
+        random(player);
+        random(computer);
+        updateStats();
+    }
+
+    function updateStats() {
+        document.getElementById("emiya-stats").innerHTML = `Strength: ${player.strength}<br>Cunning: ${player.cunning}<br>Speed: ${player.speed}<br>Fatigue: ${Math.floor(player.fatigue)}`;
+        document.getElementById("gilgamesh-stats").innerHTML = `Strength: ${computer.strength}<br>Cunning: ${computer.cunning}<br>Speed: ${computer.speed}<br>Fatigue: ${Math.floor(computer.fatigue)}`;
+    }
+
+    document.getElementById("attack-button").addEventListener("click", function() {playerMove("attack")});
+    document.getElementById("defend-button").addEventListener("click", function() {playerMove("defend")});
+    document.getElementById("finish-button").addEventListener("click", function() {playerMove("finisher")});
+    document.querySelector("div.player").style.backgroundColor = "#4a0b0f";
+    document.querySelector("div.computer").style.backgroundColor = "#968427";
+
+
+    function playerMove(choice) {
+        if(!gameOver){
+        if (player.fatigue >= 2 * computer.fatigue || computer.fatigue < 0) {
+            document.getElementById("finish-button").disabled = false;
+        } else
+        {
+            document.getElementById("finish-button").disabled = true;
+        }
+        (choice === "attack") ? attack(player, computer) : (choice === "defend") ? defend(player) : (choice === "finisher") === finisher(player,computer);
+        computerMove();
+      }
+    }
+
+    function computerMove() {
+        if(!gameOver){
+        if (computer.fatigue >= 2 * player.fatigue || player.fatigue < 0) {
+            finisher(computer, player);
+        } else {
+            const randomNum = Math.floor(Math.random() * 2) + 1;
+            if (randomNum === 1) {
+                attack(computer, player);
+            } else {
+                defend(computer);
+                if(player.defending){
+                    player.fatigue += (Math.floor(Math.random() * 6) + 1);
+                    computer.fatigue += (Math.floor(Math.random() * 6) + 1);
+                }
+            }
+        }
+      }
+    }
+    function updateBattleLog(log) {
+        const logList = document.getElementById("log-list");
+        const logItem = document.createElement("li");
+        logItem.textContent = log;
+        logList.append(logItem);
+        logItem.scrollIntoView();
+    }
+
+    function attack(attacker, defender) {
+        let attackValue = Math.floor((attacker.strength + attacker.speed + attacker.cunning) / (Math.floor(Math.random() * 3) + 1));
+        let defenseValue = 0;
+
+        if (defender.defending) {
+            defenseValue = defender.speed + defender.cunning;
+            if (attackValue > (defenseValue)) {
+                defender.fatigue -= (attackValue - defenseValue);
+                updateBattleLog(`${defender.name} tries defending but ${attacker.name} attacks ${defender.name} and deals ${(attackValue - defenseValue)} damage.`);
+            } else {
+                defender.fatigue += Math.floor(Math.random() * 6) + 1;
+                if (defender.fatigue > defender.originalFatigue) {
+                    defender.fatigue = defender.originalFatigue;
+                }
+                updateBattleLog(`${attacker.name} attacks ${defender.name} but it's defended. ${defender.name} gains ${Math.floor(Math.random() * 6) + 1} fatigue.`);
+            }
+        } else {
+            defenseValue = defender.speed + Math.floor(Math.random() * 6) + 1;
+            if(attackValue > defenseValue){
+                defender.fatigue -= (attackValue - defenseValue);
+                updateBattleLog(`${attacker.name} attacks ${defender.name} and deals ${(attackValue - defenseValue)} damage.`);
+            }
+            else{
+                updateBattleLog(`${attacker.name} attacks ${defender.name} but deals no damage.`);
+            }
+        }
+        defender.defending = false;
+        updateStats();
+    }
+
+    function finisher(attacker, defender) {
+        if (attacker.fatigue >= defender.fatigue * 2 || defender.fatigue < 0) {
+            let attackValue = (attacker.strength + attacker.speed)/ (Math.floor(Math.random() * 3) + 1);
+            let defenseValue = "";
+            if(defender.defending){
+                defenseValue = defender.speed + defender.cunning;
+            }
+            else{
+                defenseValue = defender.speed + Math.floor(Math.random() * 6) + 1;
+            }
+            if (attackValue > defenseValue) {
+                let finishingMove = "";
+                if(attacker.name === "Gilgamesh"){
+                    finishingMove = "Enuma Elish"
+                }
+                if(attacker.name === "EMIYA"){
+                    finishingMove = "Unlimited Blade Works"
+                }
+                updateBattleLog(`${attacker.name}: ${finishingMove}!!!`);
+                updateBattleLog(`${attacker.name} wins the fight!`);
+                gameOver = true;
+            } else {
+                updateBattleLog(`${attacker.name} failed to perform a Finishing Move.`);
+            }
+        } else {
+            updateBattleLog(`${attacker.name} can't perform a Finishing Move.`);
+        }
+    }
+
+    function defend(fighter) {
+        fighter.defending = true;
+        updateBattleLog(`${fighter.name} is defending.`);
+        updateStats();
+    }
+    
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+h1 {
+    text-align: center;
+    font-size: 24px;
+    color: #cae0eb;
+    text-shadow: 2px 2px 3px #333;
+}
+
+
+.action-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+.player,
+.computer {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 250px; 
+    text-align: center; 
+}
+
+
+.player {
+    left: 12%;
+    top: 60%;
+}
+
+.computer {
+    right: 12%;
+    top: 60%;
+}
+
+
+#emiya,
+#gilgamesh {
+    position: absolute;
+    width: 250px;
+    top: 45%; 
+}
+
+#emiya {
+    top: 30%;
+    left: 12%;
+}
+
+#gilgamesh {
+    top: 30%;
+    right: 12%;
+}
+
+.battle-log {
+    position: absolute;
+    bottom: 0%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 150px; 
+    text-align: center; 
+}
+
+#log-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#log-list li {
+    margin: 5px 0;
+    text-align: center; 
+}
