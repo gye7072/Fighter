@@ -5,6 +5,35 @@ h1 {
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
+body{
+    background-color:black;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+    height: 90vh;
+    margin-top: 5vh;
+    position: relative;
+}
+
+#game-stats {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 100%;
+    width: auto;
+    height: 1vh;
+    margin-top: -35vh;
+    position: relative;
+    justify-content: space-between;
+
+}
+
+
 .action-buttons {
     position: absolute;
     color: #fff;
@@ -17,22 +46,6 @@ h1 {
    
 }
 
-.progress {
-    width: 100%;
-    height: 10px;
-    position: absolute;
-    top: 10%;
-}
-
-#emiya-fatigue{
-    top:-200%;
-    left:1%;
-}
-
-#gilgamesh-fatigue{
-    top:-200%;
-    left: 1%;
-}
 
 @keyframes grow-and-shrink {
     0% {
@@ -79,9 +92,9 @@ h1 {
     padding: 20px;
     width: auto;
     text-align: center;
-    left: 44.5%;
+    left: 48%;
     top: 14%;
-    color: #4a0b0f;
+    color: #94282f;
     background: none; 
     border: none; 
     cursor: pointer;
@@ -150,25 +163,40 @@ h1 {
     top: 60%;
 }
 
+.progress {
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    top: 10%;
+}
+
+#emiya-fatigue{
+    top:-200%;
+    left:1%;
+}
+
+#gilgamesh-fatigue{
+    top:-200%;
+    left: 1%;
+}
+
 #emiya,
 #gilgamesh {
-    position: absolute;
-    width: 250px;
-    top: 45%;
+    width: 50%; 
+    max-width: 250px; 
+    height: auto; 
+    position: relative;
 }
-
 
 #emiya {
-    top: 30%;
-    left: 12%;
+    top: -8%;
+    left: 25%; 
 }
-
 
 #gilgamesh {
-    top: 30%;
-    right: 12%;
+    top: -8%;
+    left: 75%; 
 }
-
 
 .battle-log {
     position: absolute;

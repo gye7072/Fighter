@@ -5,27 +5,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body onload="initialize();">
-    <!-- <h1>Fighter Game</h1> -->
+<div id="game-container">
     <img src="EMIYA.png" id="emiya">
     <img src="Gilgamesh.png" id="gilgamesh">
-
+</div>
     <div class="action-buttons">
         <button id="attack-button">Attack</button>
         <button id="defend-button">Defend</button>
         <button id="finish-button"disabled = true>Finishing Move</button>
     </div>
-
+<div id = "game-stats">
     <div class="player">
         <progress class="progress" id="emiya-fatigue" max="30" value="30"></progress>
         <h2>EMIYA</h2>
         <div class="player-status" id="emiya-stats">Strength: 6, Cunning: 6, Speed: 6, Fatigue: 30</div>
     </div>
-    
+
     <div class="computer">
         <progress class="progress" id="gilgamesh-fatigue" max="30" value="30"></progress>
         <h2>Gilgamesh</h2>
         <div class="computer-status" id="gilgamesh-stats">Strength: 6, Cunning: 6, Speed: 6, Fatigue: 30</div>
     </div>
+</div>
 
     <div class="battle-log">
         <h2>Battle Log</h2>
@@ -44,7 +45,7 @@
         <h2 id="defeat-gif"></h2>
     </div>
     <button onclick = "window.location.reload();" id= "restart" class = "hidden">Restart</button>
-</body>
+</div>
 
 <script>
     
@@ -211,40 +212,49 @@
 
     function finisher(attacker, defender) {
     if (attacker.fatigue >= defender.fatigue * 2 || defender.fatigue < 0) {
-        gameOver = true;
-        defender.fatigue = 0;
-        const message = document.getElementById("gameOverMessage");
-        message.classList.remove("hidden");
-        let finishingMove = "";
-        if (attacker.name === "Gilgamesh") {
-            finishingMove = "Enuma Elish";
-            message.textContent = "DEFEAT!";
-            message.style.color = "red";
-            document.getElementById("victoryGif").classList.add("hidden");
-            document.getElementById("defeatGif").classList.remove("hidden");
-            setTimeout(function () {
-            victoryGif.classList.add("hidden");
-            defeatGif.classList.add("hidden");
-            document.getElementById("restart").classList.remove("hidden"); }, 3400);
+        let attackValue = Math.floor((attacker.strength + attacker.speed + attacker.cunning) / (Math.floor(Math.random() * 3) + 1));
+        let defenseValue = defender.speed + Math.floor(Math.random() * 6) + 1;
+
+        if (attackValue > defenseValue && attackValue - defenseValue > 1) {
+            gameOver = true;
+            defender.fatigue = 0;
+            const message = document.getElementById("gameOverMessage");
+            message.classList.remove("hidden");
+
+            let finishingMove = "";
+            if (attacker.name === "Gilgamesh") {
+                finishingMove = "Enuma Elish";
+                message.textContent = "DEFEAT!";
+                message.style.color = "red";
+                document.getElementById("victoryGif").classList.add("hidden");
+                document.getElementById("defeatGif").classList.remove("hidden");
+                setTimeout(function () {
+                    victoryGif.classList.add("hidden");
+                    defeatGif.classList.add("hidden");
+                    document.getElementById("restart").classList.remove("hidden");
+                }, 3400);
+            }
+
+            if (attacker.name === "EMIYA") {
+                finishingMove = "Unlimited Blade Works";
+                message.textContent = "VICTORY!";
+                message.style.color = "red";
+                document.getElementById("victoryGif").classList.remove("hidden");
+                document.getElementById("defeatGif").classList.add("hidden");
+                setTimeout(function () {
+                    victoryGif.classList.add("hidden");
+                    defeatGif.classList.add("hidden");
+                    document.getElementById("restart").classList.remove("hidden");
+                }, 2000);
+            }
+
+            updateBattleLog(`${attacker.name}: ${finishingMove}!!!`);
+            updateBattleLog(`${attacker.name} wins the fight!`);
+        } else {
+            updateBattleLog(`${attacker.name} failed to perform a Finishing Move.`);
         }
-        if (attacker.name === "EMIYA") {
-            finishingMove = "Unlimited Blade Works";
-            message.textContent = "VICTORY!";
-            message.style.color = "red";
-            document.getElementById("victoryGif").classList.remove("hidden");
-            document.getElementById("defeatGif").classList.add("hidden");
-            setTimeout(function () {
-            victoryGif.classList.add("hidden");
-            defeatGif.classList.add("hidden"); 
-            document.getElementById("restart").classList.remove("hidden"); }, 2000);
-        }
-        updateBattleLog(`${attacker.name}: ${finishingMove}!!!`);
-        updateBattleLog(`${attacker.name} wins the fight!`);
-    } else {
-        updateBattleLog(`${attacker.name} failed to perform a Finishing Move.`);
     }
 }
-
     function defend(fighter) {
         fighter.defending = true;
         updateBattleLog(`${fighter.name} is defending.`);
